@@ -36,6 +36,13 @@ async function copyFiles(dirpath, outdir) {
 
 async function copyDirectory(src, dest) {
   await fs.mkdir(dest, { recursive: true });
+  const realFiles = await fs.readdir(src, { withFileTypes: true });
+  const copyFiles = await fs.readdir(dest, { withFileTypes: true });
+  for (const out of copyFiles) {
+    if (!realFiles.some((el) => el.name === out.name)) {
+      deleteDirectory(out);
+    }
+  }
   const diir = await fs.readdir(src, { withFileTypes: true });
 
   for (const fileOne of diir) {
